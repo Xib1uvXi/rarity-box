@@ -2,7 +2,7 @@ package box
 
 import (
 	"fmt"
-	"github.com/Xib1uvXi/rarity-box/pkg/log"
+	"github.com/Xib1uvXi/rarity-box/pkg/common/log"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/go-resty/resty/v2"
 	"go.uber.org/zap"
