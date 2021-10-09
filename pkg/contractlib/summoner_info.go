@@ -2,13 +2,17 @@ package contractlib
 
 import (
 	"github.com/Xib1uvXi/rarity-box/pkg/types"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
 	"math/big"
 )
 
-func (r *RarityLib) getRarityInfo(info *types.SummonerInfo, sid *big.Int) (*types.SummonerInfo, error) {
-	rawInfo, err := r.rarity.Summoner(nil, sid)
+func (r *RarityLib) getRarityInfo(info *types.SummonerInfo, sid *big.Int, address common.Address) error {
+	rawInfo, err := r.rarity.Summoner(&bind.CallOpts{
+		From: address,
+	}, sid)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	info.ClassID = rawInfo.Class.String()
@@ -16,14 +20,60 @@ func (r *RarityLib) getRarityInfo(info *types.SummonerInfo, sid *big.Int) (*type
 	info.AdventureLog = rawInfo.Log.String()
 	info.Level = rawInfo.Level.String()
 
-	// can levelup
 	nextLevelRequireXp, err := r.rarity.XpRequired(nil, rawInfo.Level)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	if nextLevelRequireXp.Cmp(rawInfo.Xp) == 0 || nextLevelRequireXp.Cmp(rawInfo.Xp) == -1 {
-		// can levelup
-		info.CanLevelUp = true
+	info.NextLevelXp = nextLevelRequireXp.String()
+
+	gold, err := r.gold.BalanceOf(&bind.CallOpts{
+		From: address,
+	}, sid)
+
+	if err != nil {
+		return  err
 	}
+
+	info.Gold = gold.String()
+
+	goldClaimalbe, err := r.gold.Claimable(&bind.CallOpts{
+		From: address,
+	}, sid)
+
+	if err != nil {
+		return  err
+	}
+
+	info.GoldClaimable = goldClaimalbe.String()
+
+	dungeonScout, err := r.dungeon.Scout(nil, sid)
+	if err != nil {
+		return err
+	}
+
+	info.DungeonScout = dungeonScout.String()
+
+	dungeonLog, err := r.dungeon.AdventurersLog(nil, sid)
+	if err != nil {
+		return err
+	}
+
+	info.DungeonLog = dungeonLog.String()
+
+	abscore, err := r.attributes.AbilityScores(nil, sid)
+	if err != nil {
+		return err
+	}
+
+	info.Point = types.Point{
+		Strength:     abscore.Strength,
+		Dexterity:    abscore.Dexterity,
+		Constitution: abscore.Constitution,
+		Intelligence: abscore.Intelligence,
+		Wisdom:       abscore.Wisdom,
+		Charisma:     abscore.Charisma,
+	}
+
+	return  nil
 }

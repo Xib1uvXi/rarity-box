@@ -11,14 +11,17 @@ type Addresses struct {
 
 type SummonerInfo struct {
 	gorm.Model
-	Address      string `json:"address"`
-	TokenID      uint64 `json:"token_id"`
-	ClassID      string `json:"class_id"`
-	Level        string `json:"level"`
-	Xp           string `json:"xp"`
-	Gold         string `json:"gold"`
-	AdventureLog string `json:"adventure_log"`
-	DungeonLog   string `json:"dungeon_log"`
+	Address       string `json:"address"`
+	TokenID       uint64 `json:"token_id"`
+	ClassID       string `json:"class_id"`
+	Level         string `json:"level"`
+	Xp            string `json:"xp"`
+	NextLevelXp   string `json:"next_level_xp"`
+	Gold          string `json:"gold"`
+	GoldClaimable string `json:"gold_claimable"`
+	AdventureLog  string `json:"adventure_log"`
+	DungeonLog    string `json:"dungeon_log"`
+	DungeonScout  string `json:"dungeon_scout"`
 	Point
 }
 

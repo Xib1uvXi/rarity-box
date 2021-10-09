@@ -7,6 +7,7 @@ import (
 	"github.com/Xib1uvXi/rarity-box/pkg/contractlib/rarity-contract/rarity"
 	"github.com/Xib1uvXi/rarity-box/pkg/types"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
 	"math/big"
 )
 
@@ -25,12 +26,14 @@ type RarityLib struct {
 	rarity     *rarity.Rarity
 }
 
-func (r *RarityLib) SummonerInfo(tokenID uint64) (*types.SummonerInfo, error) {
-	info := &types.SummonerInfo{TokenID: tokenID}
+func (r *RarityLib) SummonerInfo(tokenID uint64, address string) (*types.SummonerInfo, error) {
+	info := &types.SummonerInfo{TokenID: tokenID, Address: address}
 
 	sid := big.NewInt(int64(tokenID))
 
-
+	if err := r.getRarityInfo(info, sid, common.HexToAddress(address)); err != nil {
+		return nil, err
+	}
 
 	return info, nil
 }
