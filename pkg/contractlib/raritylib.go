@@ -5,9 +5,11 @@ import (
 	craft_i "github.com/Xib1uvXi/rarity-box/pkg/contractlib/rarity-contract/craft-i"
 	"github.com/Xib1uvXi/rarity-box/pkg/contractlib/rarity-contract/gold"
 	"github.com/Xib1uvXi/rarity-box/pkg/contractlib/rarity-contract/rarity"
+	"github.com/Xib1uvXi/rarity-box/pkg/log"
 	"github.com/Xib1uvXi/rarity-box/pkg/types"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"go.uber.org/zap"
 	"math/big"
 )
 
@@ -32,6 +34,7 @@ func (r *RarityLib) SummonerInfo(tokenID uint64, address string) (*types.Summone
 	sid := big.NewInt(int64(tokenID))
 
 	if err := r.getRarityInfo(info, sid, common.HexToAddress(address)); err != nil {
+		log.Logger.Error("get rarity info failed", zap.Error(err))
 		return nil, err
 	}
 

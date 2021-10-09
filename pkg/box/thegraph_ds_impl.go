@@ -2,8 +2,10 @@ package box
 
 import (
 	"fmt"
+	"github.com/Xib1uvXi/rarity-box/pkg/log"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/go-resty/resty/v2"
+	"go.uber.org/zap"
 )
 
 const thegraphURL = "https://api.thegraph.com/subgraphs/name/rarity-adventure/rarity"
@@ -12,30 +14,32 @@ const thegraphURL = "https://api.thegraph.com/subgraphs/name/rarity-adventure/ra
 // Anyone can build and publish open APIs, called subgraphs, making data easily accessible
 // more info: https://thegraph.com/en/
 type thegraphDataSynchronizer struct {
-	dao dao
+	client *resty.Client
+	dao    dao
 }
 
 func newThegraphDataSynchronizer(dao dao) *thegraphDataSynchronizer {
-	return &thegraphDataSynchronizer{dao: dao}
+	return &thegraphDataSynchronizer{dao: dao, client: resty.New()}
 }
 
 func (ds *thegraphDataSynchronizer) Sync(address string) error {
 	var response ThegraphResp
 
-	client := resty.New()
-	_, err := client.R().
+	_, err := ds.client.R().
 		SetResult(&response).
 		SetHeader("Accept", "application/json").
 		SetBody([]byte(ds.genGraphql(address))).
 		Post(thegraphURL)
 
 	if err != nil {
+		log.Logger.Error("request thegrapht api failed", zap.Error(err))
 		return err
 	}
 
 	ids, err := response.dto()
 
 	if err != nil {
+		log.Logger.Error("thegrapht api resp dto failed", zap.Error(err))
 		return err
 	}
 
