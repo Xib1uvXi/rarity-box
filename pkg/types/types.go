@@ -9,7 +9,7 @@ type Addresses struct {
 	Address string `json:"address"`
 }
 
-type SummonerInfo struct {
+type Summoner struct {
 	gorm.Model
 	Address       string `json:"address"`
 	TokenID       uint64 `json:"token_id"`

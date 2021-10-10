@@ -32,17 +32,18 @@ func (ds *thegraphDataSynchronizer) Sync(address string) error {
 		Post(thegraphURL)
 
 	if err != nil {
-		log.Logger.Error("request thegrapht api failed", zap.Error(err))
+		log.Logger.Error("request thegraph api failed", zap.Error(err))
 		return err
 	}
 
 	ids, err := response.dto()
 
 	if err != nil {
-		log.Logger.Error("thegrapht api resp dto failed", zap.Error(err))
+		log.Logger.Error("thegraph api resp dto failed", zap.Error(err))
 		return err
 	}
 
+	// todo
 	return ds.dao.SaveOrUpdate(address, ids)
 }
 

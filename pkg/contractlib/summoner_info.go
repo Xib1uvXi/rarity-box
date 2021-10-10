@@ -7,7 +7,7 @@ import (
 	"math/big"
 )
 
-func (r *RarityLib) getRarityInfo(info *types.SummonerInfo, sid *big.Int, address common.Address) error {
+func (r *RarityLib) getRarityInfo(info *types.Summoner, sid *big.Int, address common.Address) error {
 	rawInfo, err := r.rarity.Summoner(&bind.CallOpts{
 		From: address,
 	}, sid)

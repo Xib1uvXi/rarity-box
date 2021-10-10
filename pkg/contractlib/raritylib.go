@@ -32,8 +32,8 @@ func NewRarityLib(conn bind.ContractBackend) (*RarityLib, error) {
 	return rlib, nil
 }
 
-func (r *RarityLib) SummonerInfo(tokenID uint64, address string) (*types.SummonerInfo, error) {
-	info := &types.SummonerInfo{TokenID: tokenID, Address: address}
+func (r *RarityLib) SummonerInfo(tokenID uint64, address string) (*types.Summoner, error) {
+	info := &types.Summoner{TokenID: tokenID, Address: address}
 
 	sid := big.NewInt(int64(tokenID))
 
