@@ -28,3 +28,14 @@ func (dao *gormDao) Save(address string, summoners []*types.Summoner) error {
 
 	return nil
 }
+
+func (dao *gormDao) SummonersByAddress(address string) ([]*types.Summoner, error) {
+	var result []*types.Summoner
+	err := dao.Model(&types.Summoner{}).Where("address = ?", address).Find(&result).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}

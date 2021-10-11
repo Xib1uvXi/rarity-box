@@ -47,5 +47,22 @@ func Test_gormDao_Save(t *testing.T) {
 		AdventureLog:  "123",
 		DungeonLog:    "123",
 		DungeonScout:  "123",
+	}, {
+		Address:       "0x6D81145629f154dBf07fDAb18D2892818626FeCF",
+		TokenID:       3,
+		ClassID:       "123",
+		Level:         "123",
+		Xp:            "123",
+		NextLevelXp:   "123",
+		Gold:          "123",
+		GoldClaimable: "123",
+		AdventureLog:  "123",
+		DungeonLog:    "123",
+		DungeonScout:  "123",
 	}}))
+
+	result, err := orm.SummonersByAddress("0x6D81145629f154dBf07fDAb18D2892818626FeCF")
+	assert.NoError(t, err)
+
+	assert.Len(t, result, 3)
 }
