@@ -1,4 +1,4 @@
-package box
+package tokenidsync
 
 import (
 	"fmt"
@@ -15,14 +15,13 @@ const thegraphURL = "https://api.thegraph.com/subgraphs/name/rarity-adventure/ra
 // more info: https://thegraph.com/en/
 type thegraphDataSynchronizer struct {
 	client *resty.Client
-	dao    dao
 }
 
-func newThegraphDataSynchronizer(dao dao) *thegraphDataSynchronizer {
-	return &thegraphDataSynchronizer{dao: dao, client: resty.New()}
+func NewThegraphDataSynchronizer() *thegraphDataSynchronizer {
+	return &thegraphDataSynchronizer{client: resty.New()}
 }
 
-func (ds *thegraphDataSynchronizer) Sync(address string) error {
+func (ds *thegraphDataSynchronizer) Sync(address string) ([]uint64, error) {
 	var response ThegraphResp
 
 	_, err := ds.client.R().
@@ -33,18 +32,18 @@ func (ds *thegraphDataSynchronizer) Sync(address string) error {
 
 	if err != nil {
 		log.Logger.Error("request thegraph api failed", zap.Error(err))
-		return err
+		return nil, err
 	}
 
 	ids, err := response.dto()
 
 	if err != nil {
 		log.Logger.Error("thegraph api resp dto failed", zap.Error(err))
-		return err
+		return nil, err
 	}
 
 	// todo
-	return ds.dao.SaveOrUpdate(address, ids)
+	return ids, nil
 }
 
 func (ds *thegraphDataSynchronizer) genGraphql(address string) string {

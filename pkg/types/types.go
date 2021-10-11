@@ -12,7 +12,7 @@ type Addresses struct {
 type Summoner struct {
 	gorm.Model
 	Address       string `json:"address"`
-	TokenID       uint64 `json:"token_id"`
+	TokenID       uint64 `json:"token_id" gorm:"unique"`
 	ClassID       string `json:"class_id"`
 	Level         string `json:"level"`
 	Xp            string `json:"xp"`

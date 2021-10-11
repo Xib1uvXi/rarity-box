@@ -1,7 +1,6 @@
-package box
+package tokenidsync
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
@@ -61,18 +60,11 @@ func TestThegraphResp_dto(t *testing.T) {
 	}
 }
 
-type testThegraphDao struct {
-	idsCheckLength int
-}
-
-func (t *testThegraphDao) SaveOrUpdate(address string, tokenIDs []uint64) error {
-	if t.idsCheckLength != len(tokenIDs) {
-		return fmt.Errorf("want get ids length: %d, actual: %d", t.idsCheckLength, len(tokenIDs))
-	}
-	return nil
-}
-
 func Test_thegraphDataSynchronizer_Sync(t *testing.T) {
-	tds := newThegraphDataSynchronizer(&testThegraphDao{309})
-	assert.NoError(t, tds.Sync("0x6d81145629f154dbf07fdab18d2892818626fecf"))
+	tds := NewThegraphDataSynchronizer()
+
+	result, err := tds.Sync("0x6d81145629f154dbf07fdab18d2892818626fecf")
+	assert.NoError(t, err)
+
+	assert.Len(t, result, 309)
 }
