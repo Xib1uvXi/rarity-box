@@ -2,7 +2,9 @@ package tokenidsync
 
 import (
 	"fmt"
+	"github.com/Xib1uvXi/rarity-box/pkg/common/log"
 	"github.com/go-resty/resty/v2"
+	"go.uber.org/zap"
 	"strconv"
 )
 
@@ -26,6 +28,7 @@ func (f *ftmscanTokenIDSynchronizer) Sync(address string) ([]uint64, error) {
 		Get(f.apiUrl(address))
 
 	if err != nil {
+		log.Logger.Error("request ftmscan api failed", zap.Error(err))
 		return nil, err
 	}
 
@@ -36,7 +39,9 @@ func (f *ftmscanTokenIDSynchronizer) Sync(address string) ([]uint64, error) {
 		element := response.Result[i]
 
 		id, err := strconv.ParseUint(element.TokenID, 10, 64)
+
 		if err != nil {
+			log.Logger.Error("convert string to uint64 failed", zap.String("raw value", element.TokenID), zap.Error(err))
 			return nil, err
 		}
 
