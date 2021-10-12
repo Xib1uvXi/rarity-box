@@ -12,7 +12,10 @@ import (
 	"github.com/ethereum/go-ethereum/params"
 	"go.uber.org/zap"
 	"math/big"
+	"strings"
 )
+
+const CallerContractAddress = "0x3B8d1f9569ec2B8C3dD76847B944bB1b0c998A38"
 
 type CallerLib struct {
 	*RarityLib
@@ -21,8 +24,39 @@ type CallerLib struct {
 	caller *caller.Caller
 }
 
-func (l *CallerLib) checkCallerIsOperator(address string) (bool, error) {
-	result, err := l.rarity.IsApprovedForAll(nil, common.HexToAddress(address), common.HexToAddress(CallerContractAddress))
+func NewCallerLib(rarityLib *RarityLib, hasFee bool) (*CallerLib, error) {
+	clib := &CallerLib{RarityLib: rarityLib, hasFee: hasFee}
+
+	callerContract, err := caller.NewCaller(common.HexToAddress(CallerContractAddress), clib.conn)
+	if err != nil {
+		return nil, err
+	}
+
+	clib.caller = callerContract
+
+	cabi, err := abi.JSON(strings.NewReader(caller.CallerABI))
+	if err != nil {
+		return nil, err
+	}
+
+	clib.cAbi = cabi
+
+	callerIsOpertor, err := clib.checkCallerIsOperator(clib.txSender.Address())
+	if err != nil {
+		return nil, err
+	}
+
+	if !callerIsOpertor {
+		if err := clib.callerSetOperator(); err != nil {
+			return nil, err
+		}
+	}
+
+	return clib, nil
+}
+
+func (l *CallerLib) checkCallerIsOperator(address common.Address) (bool, error) {
+	result, err := l.rarity.IsApprovedForAll(nil, address, common.HexToAddress(CallerContractAddress))
 	if err != nil {
 		log.Logger.Error("req rarity contract is approved for all failed", zap.Error(err))
 		return false, err
@@ -51,7 +85,7 @@ func (l *CallerLib) Adventure(ids []uint64) error {
 	txExecutor := func(opts *bind.TransactOpts) (*ethTypes.Transaction, error) {
 
 		if l.hasFee {
-			cost, err := l.estimateGasCost(opts.From, "adventure", _ids...)
+			cost, err := l.estimateGasCost(opts.From, "adventure", _ids)
 			if err != nil {
 				return nil, err
 			}
@@ -76,7 +110,7 @@ func (l *CallerLib) Levelup(ids []uint64) error {
 
 	txExecutor := func(opts *bind.TransactOpts) (*ethTypes.Transaction, error) {
 		if l.hasFee {
-			cost, err := l.estimateGasCost(opts.From, "level_up", _ids...)
+			cost, err := l.estimateGasCost(opts.From, "level_up", _ids)
 			if err != nil {
 				return nil, err
 			}
@@ -106,7 +140,7 @@ func (l *CallerLib) ClaimGold(ids []uint64) error {
 
 	txExecutor := func(opts *bind.TransactOpts) (*ethTypes.Transaction, error) {
 		if l.hasFee {
-			cost, err := l.estimateGasCost(opts.From, "level_up", _ids...)
+			cost, err := l.estimateGasCost(opts.From, "claim_gold", _ids, needApprove)
 			if err != nil {
 				return nil, err
 			}
@@ -120,6 +154,36 @@ func (l *CallerLib) ClaimGold(ids []uint64) error {
 	err = l.txSender.SendTxWaitConfirm(txExecutor)
 	if err != nil {
 		log.Logger.Error("caller claim gold send tx failed", zap.Error(err), zap.Uint64s("token id", ids))
+		return err
+	}
+
+	return nil
+}
+
+func (l *CallerLib) Dungeon(ids []uint64) error {
+	_ids := l.convertUint2BigInt(ids)
+	needApprove, err := l.needApproved(_ids)
+
+	if err != nil {
+		return err
+	}
+
+	txExecutor := func(opts *bind.TransactOpts) (*ethTypes.Transaction, error) {
+		if l.hasFee {
+			cost, err := l.estimateGasCost(opts.From, "dungeon", _ids, needApprove)
+			if err != nil {
+				return nil, err
+			}
+
+			opts.Value = cost
+		}
+
+		return l.caller.Dungeon(opts, _ids, needApprove)
+	}
+
+	err = l.txSender.SendTxWaitConfirm(txExecutor)
+	if err != nil {
+		log.Logger.Error("caller dungeon send tx failed", zap.Error(err), zap.Uint64s("token id", ids))
 		return err
 	}
 
@@ -155,7 +219,7 @@ func (l *CallerLib) convertUint2BigInt(ids []uint64) []*big.Int {
 	return _ids
 }
 
-func (l *CallerLib) estimateGasCost(from common.Address, method string, param ...*big.Int) (*big.Int, error) {
+func (l *CallerLib) estimateGasCost(from common.Address, method string, param ...interface{}) (*big.Int, error) {
 	to := common.HexToAddress(CallerContractAddress)
 	callData, err := l.cAbi.Pack(method, param)
 	if err != nil {

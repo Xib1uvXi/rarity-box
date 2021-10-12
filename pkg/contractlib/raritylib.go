@@ -21,6 +21,13 @@ type TxSender interface {
 	Address() common.Address
 }
 
+const (
+	RarityContractAddress     = "0xce761D788DF608BD21bdd59d6f4B54b2e27F25Bb"
+	AttributesContractAddress = "0xB5F5AF1087A8DA62A23b08C00C6ec9af21F397a1"
+	CraftIContractAddress     = "0x2A0F1cB17680161cF255348dDFDeE94ea8Ca196A"
+	GoldContractAddress       = "0x2069B76Afe6b734Fb65D1d099E7ec64ee9CC76B2"
+)
+
 type RarityLib struct {
 	conn       *ethclient.Client
 	attributes *attributes.Attributes
@@ -33,7 +40,7 @@ type RarityLib struct {
 func NewRarityLib(conn *ethclient.Client, sender TxSender) (*RarityLib, error) {
 	rlib := &RarityLib{conn: conn, txSender: sender}
 
-	if err := InitRarityLib(rlib); err != nil {
+	if err := initRarityLib(rlib); err != nil {
 		log.Logger.Error("init rarity lib failed", zap.Error(err))
 		return nil, err
 	}
@@ -52,4 +59,36 @@ func (r *RarityLib) SummonerInfo(tokenID uint64, address string) (*types.Summone
 	}
 
 	return info, nil
+}
+
+func initRarityLib(rlib *RarityLib) error {
+	rarityContract, err := rarity.NewRarity(common.HexToAddress(RarityContractAddress), rlib.conn)
+	if err != nil {
+		return err
+	}
+
+	rlib.rarity = rarityContract
+
+	attributesContract, err := attributes.NewAttributes(common.HexToAddress(AttributesContractAddress), rlib.conn)
+	if err != nil {
+		return err
+	}
+
+	rlib.attributes = attributesContract
+
+	dungeonContract, err := craft_i.NewCraftI(common.HexToAddress(CraftIContractAddress), rlib.conn)
+	if err != nil {
+		return err
+	}
+
+	rlib.dungeon = dungeonContract
+
+	goldContract, err := gold.NewGold(common.HexToAddress(GoldContractAddress), rlib.conn)
+	if err != nil {
+		return err
+	}
+
+	rlib.gold = goldContract
+
+	return nil
 }
