@@ -14,3 +14,6 @@ abigen --abi=./pkg/contractlib/rarity-abi/gold.abi.json --pkg=gold --out=./pkg/c
 abigen --abi=./pkg/contractlib/rarity-abi/skills.abi.json --pkg=skills --out=./pkg/contractlib/rarity-contract/skills/contract.go
 abigen --abi=./pkg/contractlib/rarity-abi/Craft.I.abi.json --pkg=craft_i --out=./pkg/contractlib/rarity-contract/craft-i/contract.go
 abigen --abi=./pkg/contractlib/rarity-abi/Crafting.I.abi.json --pkg=crafting_i --out=./pkg/contractlib/rarity-contract/crafting-i/contract.go
+
+mkdir -p ./pkg/contractlib/caller-contract/caller
+abigen --abi=./pkg/contractlib/caller-abi/caller.abi.json --pkg=caller --out=./pkg/contractlib/caller-contract/caller/contract.go
