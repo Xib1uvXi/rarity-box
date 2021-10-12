@@ -43,3 +43,7 @@ type Point struct {
 	Wisdom       uint32 `json:"wisdom"`
 	Charisma     uint32 `json:"charisma"`
 }
+
+func (p *Point) PointNotSet() bool {
+	return p.Strength == 0 && p.Dexterity == 0 && p.Constitution == 0 && p.Intelligence == 0 && p.Wisdom == 0 && p.Charisma == 0
+}

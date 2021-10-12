@@ -19,6 +19,10 @@ type syncer struct {
 	tokenIDsGetter     AssetsIDSynchronizer
 }
 
+func NewSyncer(summonerInfoGetter SummonerReader, tokenIDsGetter AssetsIDSynchronizer) *syncer {
+	return &syncer{summonerInfoGetter: summonerInfoGetter, tokenIDsGetter: tokenIDsGetter}
+}
+
 func (s *syncer) SetTokenIDsGetter(tokenIDsGetter AssetsIDSynchronizer) {
 	s.tokenIDsGetter = tokenIDsGetter
 }

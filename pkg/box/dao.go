@@ -15,6 +15,10 @@ type dao struct {
 	db Storage
 }
 
+func NewDao(db Storage) *dao {
+	return &dao{db: db}
+}
+
 func (d *dao) Summoners(address string) ([]*types.Summoner, error) {
 	summoners, err := d.db.SummonersByAddress(address)
 	if err != nil {
