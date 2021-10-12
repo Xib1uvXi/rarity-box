@@ -10,16 +10,16 @@ type SummonerReader interface {
 	Summoners(address string, tokenIDs []uint64) ([]*types.Summoner, error)
 }
 
-type AddressAssetsSynchronizer interface {
+type AssetsIDSynchronizer interface {
 	Sync(address string) ([]uint64, error)
 }
 
 type syncer struct {
 	summonerInfoGetter SummonerReader
-	tokenIDsGetter     AddressAssetsSynchronizer
+	tokenIDsGetter     AssetsIDSynchronizer
 }
 
-func (s *syncer) SetTokenIDsGetter(tokenIDsGetter AddressAssetsSynchronizer) {
+func (s *syncer) SetTokenIDsGetter(tokenIDsGetter AssetsIDSynchronizer) {
 	s.tokenIDsGetter = tokenIDsGetter
 }
 

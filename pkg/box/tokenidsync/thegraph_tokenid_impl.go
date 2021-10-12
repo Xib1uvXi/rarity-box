@@ -10,18 +10,18 @@ import (
 
 const thegraphURL = "https://api.thegraph.com/subgraphs/name/rarity-adventure/rarity"
 
-// thegraphDataSynchronizer use The Graph which is an indexing protocol for querying networks like Ethereum and IPFS
+// thegraphTokenIDSynchronizer use The Graph which is an indexing protocol for querying networks like Ethereum and IPFS
 // Anyone can build and publish open APIs, called subgraphs, making data easily accessible
 // more info: https://thegraph.com/en/
-type thegraphDataSynchronizer struct {
+type thegraphTokenIDSynchronizer struct {
 	client *resty.Client
 }
 
-func NewThegraphDataSynchronizer() *thegraphDataSynchronizer {
-	return &thegraphDataSynchronizer{client: resty.New()}
+func NewThegraphTokenIDSynchronizer() *thegraphTokenIDSynchronizer {
+	return &thegraphTokenIDSynchronizer{client: resty.New()}
 }
 
-func (ds *thegraphDataSynchronizer) Sync(address string) ([]uint64, error) {
+func (ds *thegraphTokenIDSynchronizer) Sync(address string) ([]uint64, error) {
 	var response ThegraphResp
 
 	_, err := ds.client.R().
@@ -46,7 +46,7 @@ func (ds *thegraphDataSynchronizer) Sync(address string) ([]uint64, error) {
 	return ids, nil
 }
 
-func (ds *thegraphDataSynchronizer) genGraphql(address string) string {
+func (ds *thegraphTokenIDSynchronizer) genGraphql(address string) string {
 	return fmt.Sprintf(`{"variables":{},"query":"{\n  summoners(\n    first: 1000\n    where: {owner: \"%s\"}\n  ) {\n    id\n    owner\n    _class\n    _level\n    __typename\n  }\n}\n"}`, address)
 }
 

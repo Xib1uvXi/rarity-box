@@ -61,7 +61,7 @@ func TestThegraphResp_dto(t *testing.T) {
 }
 
 func Test_thegraphDataSynchronizer_Sync(t *testing.T) {
-	tds := NewThegraphDataSynchronizer()
+	tds := NewThegraphTokenIDSynchronizer()
 
 	result, err := tds.Sync("0x6d81145629f154dbf07fdab18d2892818626fecf")
 	assert.NoError(t, err)
