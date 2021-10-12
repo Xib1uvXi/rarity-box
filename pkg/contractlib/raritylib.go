@@ -2,7 +2,6 @@ package contractlib
 
 import (
 	"github.com/Xib1uvXi/rarity-box/pkg/common/log"
-	"github.com/Xib1uvXi/rarity-box/pkg/contractlib/caller-contract/caller"
 	"github.com/Xib1uvXi/rarity-box/pkg/contractlib/rarity-contract/attributes"
 	craft_i "github.com/Xib1uvXi/rarity-box/pkg/contractlib/rarity-contract/craft-i"
 	"github.com/Xib1uvXi/rarity-box/pkg/contractlib/rarity-contract/gold"
@@ -28,7 +27,6 @@ type RarityLib struct {
 	dungeon    *craft_i.CraftI
 	gold       *gold.Gold
 	rarity     *rarity.Rarity
-	caller     *caller.Caller
 	txSender   TxSender
 }
 
@@ -38,17 +36,6 @@ func NewRarityLib(conn *ethclient.Client, sender TxSender) (*RarityLib, error) {
 	if err := InitRarityLib(rlib); err != nil {
 		log.Logger.Error("init rarity lib failed", zap.Error(err))
 		return nil, err
-	}
-
-	callerIsOperator, err := rlib.checkCallerIsOperator(rlib.txSender.Address().String())
-	if err != nil {
-		return nil, err
-	}
-
-	if !callerIsOperator {
-		if err := rlib.callerSetOperator(); err != nil {
-			return nil, err
-		}
 	}
 
 	return rlib, nil

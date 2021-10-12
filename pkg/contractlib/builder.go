@@ -1,7 +1,6 @@
 package contractlib
 
 import (
-	"github.com/Xib1uvXi/rarity-box/pkg/contractlib/caller-contract/caller"
 	"github.com/Xib1uvXi/rarity-box/pkg/contractlib/rarity-contract/attributes"
 	craft_i "github.com/Xib1uvXi/rarity-box/pkg/contractlib/rarity-contract/craft-i"
 	"github.com/Xib1uvXi/rarity-box/pkg/contractlib/rarity-contract/gold"
@@ -45,9 +44,6 @@ func InitRarityLib(rlib *RarityLib) error {
 	}
 
 	rlib.gold = goldContract
-
-	callerContract, err := caller.NewCaller(common.HexToAddress(CallerContractAddress), rlib.conn)
-	rlib.caller = callerContract
 
 	return nil
 }

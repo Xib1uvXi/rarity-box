@@ -3,6 +3,7 @@ module github.com/Xib1uvXi/rarity-box
 go 1.17
 
 require (
+	github.com/btcsuite/goleveldb v0.0.0-20160330041536-7834afc9e8cd
 	github.com/ethereum/go-ethereum v1.10.9
 	github.com/go-resty/resty/v2 v2.6.0
 	github.com/json-iterator/go v1.1.6
