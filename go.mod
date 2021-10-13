@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/btcsuite/goleveldb v0.0.0-20160330041536-7834afc9e8cd
 	github.com/ethereum/go-ethereum v1.10.9
+	github.com/gin-gonic/gin v1.7.4
 	github.com/go-resty/resty/v2 v2.6.0
 	github.com/json-iterator/go v1.1.12
 	github.com/stretchr/testify v1.7.0
@@ -19,7 +20,6 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/deckarep/golang-set v0.0.0-20180603214616-504e848d77ea // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/gin-gonic/gin v1.7.4 // indirect
 	github.com/go-ole/go-ole v1.2.1 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
