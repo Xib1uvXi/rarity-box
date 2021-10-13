@@ -22,16 +22,23 @@ func main() {
 		panic(err)
 	}
 
-	summonersSyncer := box.BuildBox(summonerinfo.NewConcurrentReader(40, rlib))
+	ablib, err := contractlib.NewAbLib(rlib)
+
+	if err != nil {
+		panic(err)
+	}
+
+	summonersSyncer := box.BuildBox(summonerinfo.NewConcurrentReader(40, ablib))
 
 	taskBuilder := tasker.NewTaskBuilder(summonersSyncer)
 
-	ginServer := appbackend.NewGinServer(appbackend.NewSrv(summonersSyncer, taskBuilder))
+	ginServer := appbackend.NewGinServer(appbackend.NewSrv(summonersSyncer, taskBuilder, ablib))
 
 	router := gin.Default()
 
 	router.GET("/summoners/:address", ginServer.Summoners)
 	router.GET("/tasks/:address", ginServer.Tasks)
+	router.POST("/approve/check", ginServer.IsOperator)
 
 	router.Run(":8080")
 }

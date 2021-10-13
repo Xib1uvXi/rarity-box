@@ -2,7 +2,6 @@
 
 ## 获取 Address下的Summoners
 
-
 Request： 
 
 ```text
@@ -114,3 +113,31 @@ Responses：
 Responses result 中 ids  不需要理会
 
 暂时支持这4个批量任务，召唤&加点后续再加
+
+## 判断用户是否给Caller进行授权(SetApprovedForAll权限)
+
+Request：
+
+```text
+HTTP请求
+
+类型: POST
+
+URL：/approve/check
+
+例子： 
+
+{
+    "address":"0x6D81145629f154dBf07fDAb18D2892818626FeCF"
+}
+
+```
+
+Responses：
+
+```json
+{
+    "result": true,
+    "success": true
+}
+```

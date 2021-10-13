@@ -7,6 +7,7 @@ require (
 	github.com/ethereum/go-ethereum v1.10.9
 	github.com/gin-gonic/gin v1.7.4
 	github.com/go-resty/resty/v2 v2.6.0
+	github.com/hnlq715/golang-lru v0.3.0
 	github.com/json-iterator/go v1.1.12
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/zap v1.9.1

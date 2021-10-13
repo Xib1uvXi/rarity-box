@@ -3,7 +3,9 @@ package appbackend
 import (
 	"github.com/Xib1uvXi/rarity-box/pkg/common/log"
 	"github.com/Xib1uvXi/rarity-box/pkg/types"
+	"github.com/hnlq715/golang-lru"
 	"go.uber.org/zap"
+	"time"
 )
 
 type SummonersSyncer interface {
@@ -14,13 +16,25 @@ type Tasker interface {
 	Tasks(address string) ([]*types.Task, error)
 }
 
+type Operator interface {
+	IsOperator(address string) (bool, error)
+	SetOperator() (*types.RawTxParam, error)
+}
+
 type srv struct {
 	summonersSyncer SummonersSyncer
 	tasker          Tasker
+	operator        Operator
+	operatorCache   *lru.ARCCache
 }
 
-func NewSrv(summonersSyncer SummonersSyncer, tasker Tasker) *srv {
-	return &srv{summonersSyncer: summonersSyncer, tasker: tasker}
+func NewSrv(summonersSyncer SummonersSyncer, tasker Tasker, operator Operator) *srv {
+	cache, err := lru.NewARCWithExpire(100, 15*time.Second)
+	if err != nil {
+		panic(err)
+	}
+
+	return &srv{summonersSyncer: summonersSyncer, tasker: tasker, operatorCache: cache, operator: operator}
 }
 
 func (s *srv) Summoners(address string) ([]*types.Summoner, error) {
@@ -45,4 +59,31 @@ func (s *srv) Tasks(address string) ([]*types.Task, error) {
 	}
 
 	return tasks, nil
+}
+
+func (s *srv) IsOperator(address string) (bool, error) {
+	r, ok := s.operatorCache.Get(address)
+	if ok {
+		return r.(bool), nil
+	}
+
+	result, err := s.operator.IsOperator(address)
+	if err != nil {
+		log.Logger.Error("appbackend get is operator failed", zap.String("address", address), zap.Error(err))
+		return false, err
+	}
+
+	s.operatorCache.Add(address, result)
+
+	return result, nil
+}
+
+func (s *srv) SetOperator() (*types.RawTxParam, error) {
+	param, err := s.operator.SetOperator()
+	if err != nil {
+		log.Logger.Error("appbackend set operator failed", zap.Error(err))
+		return nil, err
+	}
+
+	return param, nil
 }
