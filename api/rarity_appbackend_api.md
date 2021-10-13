@@ -63,3 +63,52 @@ if dayjs(new Date(dungeon_log * 1000)).isBefore(dayjs(new Date())) {
     // 可地牢
 }
 ```
+
+## 获取 Address 可以批量跑的任务数量
+
+Request： 
+
+```text
+HTTP请求
+
+类型: GET
+
+URL：/task/{address}
+
+例子： /tasks/0x6D81145629f154dBf07fDAb18D2892818626FeCF
+
+```
+
+Responses：
+
+```json
+{
+    "result": [
+        {
+            "task_type": "levelup`",
+            "ids": [],
+            "count": 0
+        },
+        {
+            "task_type": "goldclaim",
+            "ids": [],
+            "count": 0
+        },
+        {
+            "task_type": "adventure",
+            "ids": [],
+            "count": 306
+        },
+        {
+            "task_type": "dungeon",
+            "ids": [],
+            "count": 286
+        }
+    ],
+    "success": true
+}
+```
+
+### 特殊说明
+
+Responses result 中 ids  不需要理会
