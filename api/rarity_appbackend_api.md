@@ -85,7 +85,7 @@ Responses：
 {
     "result": [
         {
-            "task_type": "levelup`",
+            "task_type": "levelup",
             "ids": [],
             "count": 0
         },
