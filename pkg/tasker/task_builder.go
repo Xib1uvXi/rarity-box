@@ -1,4 +1,4 @@
-package dispatcher
+package tasker
 
 import "github.com/Xib1uvXi/rarity-box/pkg/types"
 
