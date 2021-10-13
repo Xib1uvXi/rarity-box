@@ -21,6 +21,13 @@ type Operator interface {
 	SetOperator() (*types.RawTxParam, error)
 }
 
+type TxBuilder interface {
+	Adventure(from string, ids []uint64) (*types.RawTxParam, error)
+	Levelup(from string, ids []uint64) (*types.RawTxParam, error)
+	ClaimGold(from string, ids []uint64) (*types.RawTxParam, error)
+	Dungeon(from string, ids []uint64) (*types.RawTxParam, error)
+}
+
 type srv struct {
 	summonersSyncer SummonersSyncer
 	tasker          Tasker
