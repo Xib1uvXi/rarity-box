@@ -112,3 +112,5 @@ Responses：
 ### 特殊说明
 
 Responses result 中 ids  不需要理会
+
+暂时支持这4个批量任务，召唤&加点后续再加
