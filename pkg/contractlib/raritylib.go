@@ -34,11 +34,11 @@ type RarityLib struct {
 	dungeon    *craft_i.CraftI
 	gold       *gold.Gold
 	rarity     *rarity.Rarity
-	txSender   TxSender
+	TxSender   TxSender
 }
 
 func NewRarityLib(conn *ethclient.Client, sender TxSender) (*RarityLib, error) {
-	rlib := &RarityLib{conn: conn, txSender: sender}
+	rlib := &RarityLib{conn: conn, TxSender: sender}
 
 	if err := initRarityLib(rlib); err != nil {
 		log.Logger.Error("init rarity lib failed", zap.Error(err))

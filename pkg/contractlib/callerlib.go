@@ -41,7 +41,7 @@ func NewCallerLib(rarityLib *RarityLib, hasFee bool) (*CallerLib, error) {
 
 	clib.cAbi = cabi
 
-	callerIsOpertor, err := clib.checkCallerIsOperator(clib.txSender.Address())
+	callerIsOpertor, err := clib.checkCallerIsOperator(clib.TxSender.Address())
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +70,7 @@ func (l *CallerLib) callerSetOperator() error {
 		return l.rarity.SetApprovalForAll(opts, common.HexToAddress(CallerContractAddress), true)
 	}
 
-	err := l.txSender.SendTxWaitConfirm(txExecutor)
+	err := l.TxSender.SendTxWaitConfirm(txExecutor)
 	if err != nil {
 		log.Logger.Error("approve for all send tx failed", zap.Error(err))
 		return err
@@ -96,7 +96,7 @@ func (l *CallerLib) Adventure(ids []uint64) error {
 		return l.caller.Adventure(opts, _ids)
 	}
 
-	err := l.txSender.SendTxWaitConfirm(txExecutor)
+	err := l.TxSender.SendTxWaitConfirm(txExecutor)
 	if err != nil {
 		log.Logger.Error("caller adventure send tx failed", zap.Error(err), zap.Uint64s("token id", ids))
 		return err
@@ -121,7 +121,7 @@ func (l *CallerLib) Levelup(ids []uint64) error {
 		return l.caller.LevelUp(opts, _ids)
 	}
 
-	err := l.txSender.SendTxWaitConfirm(txExecutor)
+	err := l.TxSender.SendTxWaitConfirm(txExecutor)
 	if err != nil {
 		log.Logger.Error("caller levelup send tx failed", zap.Error(err), zap.Uint64s("token id", ids))
 		return err
@@ -151,7 +151,7 @@ func (l *CallerLib) ClaimGold(ids []uint64) error {
 		return l.caller.ClaimGold(opts, _ids, needApprove)
 	}
 
-	err = l.txSender.SendTxWaitConfirm(txExecutor)
+	err = l.TxSender.SendTxWaitConfirm(txExecutor)
 	if err != nil {
 		log.Logger.Error("caller claim gold send tx failed", zap.Error(err), zap.Uint64s("token id", ids))
 		return err
@@ -181,7 +181,7 @@ func (l *CallerLib) Dungeon(ids []uint64) error {
 		return l.caller.Dungeon(opts, _ids, needApprove)
 	}
 
-	err = l.txSender.SendTxWaitConfirm(txExecutor)
+	err = l.TxSender.SendTxWaitConfirm(txExecutor)
 	if err != nil {
 		log.Logger.Error("caller dungeon send tx failed", zap.Error(err), zap.Uint64s("token id", ids))
 		return err

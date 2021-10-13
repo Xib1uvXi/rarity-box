@@ -1,6 +1,9 @@
 package taskfactory
 
-import "github.com/Xib1uvXi/rarity-box/pkg/types"
+import (
+	"github.com/Xib1uvXi/rarity-box/pkg/tasker/summonerstatuschecker"
+	"github.com/Xib1uvXi/rarity-box/pkg/types"
+)
 
 type Checker interface {
 	Status(summoner *types.Summoner) *types.SummonerStatus
@@ -8,6 +11,10 @@ type Checker interface {
 
 type callerTaskFactory struct {
 	checker Checker
+}
+
+func NewCallerTaskFactory() *callerTaskFactory {
+	return &callerTaskFactory{checker: &summonerstatuschecker.Checkers{}}
 }
 
 func (c *callerTaskFactory) Task(summoners []*types.Summoner) []*types.Task {
@@ -42,7 +49,7 @@ func (c *callerTaskFactory) Task(summoners []*types.Summoner) []*types.Task {
 
 	var result []*types.Task
 
-	result = append(result, adventureTask, levelupTask, goldclaimTask, dungeonTask)
+	result = append(result, levelupTask, goldclaimTask, adventureTask, dungeonTask)
 
 	return result
 }

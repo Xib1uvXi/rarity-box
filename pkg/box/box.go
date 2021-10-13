@@ -7,8 +7,12 @@ import (
 )
 
 type Box struct {
-	dao    *dao
+	//dao    *dao
 	syncer *syncer
+}
+
+func NewBox(syncer *syncer) *Box {
+	return &Box{syncer: syncer}
 }
 
 func (b *Box) SyncSummoners(address string) ([]*types.Summoner, error) {
