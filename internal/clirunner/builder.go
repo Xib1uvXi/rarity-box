@@ -1,9 +1,9 @@
 package clirunner
 
 import (
+	"github.com/Xib1uvXi/rarity-box/internal/clirunner/executor"
 	"github.com/Xib1uvXi/rarity-box/pkg/box"
 	"github.com/Xib1uvXi/rarity-box/pkg/box/summonerinfo"
-	"github.com/Xib1uvXi/rarity-box/pkg/clirunner/executor"
 	"github.com/Xib1uvXi/rarity-box/pkg/contractlib"
 	"github.com/Xib1uvXi/rarity-box/pkg/tasker"
 	"github.com/ethereum/go-ethereum/ethclient"

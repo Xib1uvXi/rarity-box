@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Xib1uvXi/rarity-box/pkg/appbackend"
+	appbackend2 "github.com/Xib1uvXi/rarity-box/internal/appbackend"
 	"github.com/Xib1uvXi/rarity-box/pkg/box"
 	"github.com/Xib1uvXi/rarity-box/pkg/box/summonerinfo"
 	"github.com/Xib1uvXi/rarity-box/pkg/contractlib"
@@ -32,7 +32,7 @@ func main() {
 
 	taskBuilder := tasker.NewTaskBuilder(summonersSyncer)
 
-	ginServer := appbackend.NewGinServer(appbackend.NewSrv(summonersSyncer, taskBuilder, ablib))
+	ginServer := appbackend2.NewGinServer(appbackend2.NewSrv(summonersSyncer, taskBuilder, ablib))
 
 	router := gin.Default()
 

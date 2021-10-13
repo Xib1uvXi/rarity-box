@@ -2,9 +2,9 @@ package clirunner
 
 import (
 	"fmt"
+	"github.com/Xib1uvXi/rarity-box/internal/clirunner/executor"
 	"github.com/Xib1uvXi/rarity-box/pkg/box"
 	"github.com/Xib1uvXi/rarity-box/pkg/box/summonerinfo"
-	"github.com/Xib1uvXi/rarity-box/pkg/clirunner/executor"
 	"github.com/Xib1uvXi/rarity-box/pkg/common/json"
 	"github.com/Xib1uvXi/rarity-box/pkg/contractlib"
 	"github.com/Xib1uvXi/rarity-box/pkg/tasker"

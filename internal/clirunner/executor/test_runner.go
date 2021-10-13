@@ -7,9 +7,9 @@ import (
 )
 
 type TestExecutor struct {
-	limit            int
-	clib             lib
-	RunLevelupTask   bool
+	limit          int
+	clib           lib
+	RunLevelupTask bool
 	RunGoldClaimTask bool
 	RunAdventureTask bool
 	RunDungeonTask   bool
