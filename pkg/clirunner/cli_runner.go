@@ -14,16 +14,17 @@ type Executor interface {
 type Runner struct {
 	taskBuilder *tasker.TaskBuilder
 	executor    Executor
+	address     string
 }
 
-func NewRunner(taskBuilder *tasker.TaskBuilder, executor Executor) *Runner {
-	return &Runner{taskBuilder: taskBuilder, executor: executor}
+func NewRunner(taskBuilder *tasker.TaskBuilder, executor Executor, address string) *Runner {
+	return &Runner{taskBuilder: taskBuilder, executor: executor, address: address}
 }
 
-func (r *Runner) Run(address string) error {
-	tasks, err := r.taskBuilder.Build(address)
+func (r *Runner) Run() error {
+	tasks, err := r.taskBuilder.Build(r.address)
 	if err != nil {
-		log.Logger.Error("runner build task failed", zap.String("address", address), zap.Error(err))
+		log.Logger.Error("runner build task failed", zap.String("address", r.address), zap.Error(err))
 		return err
 	}
 

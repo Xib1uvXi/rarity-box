@@ -25,7 +25,7 @@ func Build(pkStr string, hasFee bool) (*Runner, error) {
 
 	summonersSyncer := box.BuildBox(summonerinfo.NewConcurrentReader(40, clib))
 
-	runner := NewRunner(tasker.NewTaskBuilder(summonersSyncer), limitExecutor)
+	runner := NewRunner(tasker.NewTaskBuilder(summonersSyncer), limitExecutor, clib.TxSender.Address().String())
 
 	return runner, nil
 }
