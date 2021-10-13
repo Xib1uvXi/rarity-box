@@ -6,28 +6,31 @@ import (
 	"go.uber.org/zap"
 )
 
-type lib interface {
-	Adventure(ids []uint64) error
-	Levelup(ids []uint64) error
-	ClaimGold(ids []uint64) error
-	Dungeon(ids []uint64) error
+type TestExecutor struct {
+	limit            int
+	clib             lib
+	RunLevelupTask   bool
+	RunGoldClaimTask bool
+	RunAdventureTask bool
+	RunDungeonTask   bool
 }
 
-type LimitExecutor struct {
-	clib lib
+func NewTestExecutor(clib lib) *TestExecutor {
+	return &TestExecutor{limit: 100, clib: clib}
 }
 
-func NewLimitExecutor(clib lib) *LimitExecutor {
-	return &LimitExecutor{clib: clib}
-}
-
-func (l *LimitExecutor) Run(tasks []*types.Task) error {
+func (l *TestExecutor) Run(tasks []*types.Task) error {
 	for i := range tasks {
 		task := tasks[i]
 
 		switch task.TaskType {
 		case types.LevelupTask:
-			err := l.limitRun(249, task.IDs, func(ids []uint64) error {
+
+			if !l.RunLevelupTask {
+				continue
+			}
+
+			err := l.limitRun(task.IDs, func(ids []uint64) error {
 				return l.clib.Levelup(ids)
 			})
 
@@ -37,7 +40,12 @@ func (l *LimitExecutor) Run(tasks []*types.Task) error {
 			}
 
 		case types.GoldClaimTask:
-			err := l.limitRun(100, task.IDs, func(ids []uint64) error {
+
+			if !l.RunGoldClaimTask {
+				continue
+			}
+
+			err := l.limitRun(task.IDs, func(ids []uint64) error {
 				return l.clib.ClaimGold(ids)
 			})
 
@@ -47,7 +55,12 @@ func (l *LimitExecutor) Run(tasks []*types.Task) error {
 			}
 
 		case types.AdventureTask:
-			err := l.limitRun(249, task.IDs, func(ids []uint64) error {
+
+			if !l.RunAdventureTask {
+				continue
+			}
+
+			err := l.limitRun(task.IDs, func(ids []uint64) error {
 				return l.clib.Adventure(ids)
 			})
 
@@ -57,7 +70,12 @@ func (l *LimitExecutor) Run(tasks []*types.Task) error {
 			}
 
 		case types.DungeonTask:
-			err := l.limitRun(100, task.IDs, func(ids []uint64) error {
+
+			if !l.RunDungeonTask {
+				continue
+			}
+
+			err := l.limitRun(task.IDs, func(ids []uint64) error {
 				return l.clib.Dungeon(ids)
 			})
 
@@ -71,8 +89,8 @@ func (l *LimitExecutor) Run(tasks []*types.Task) error {
 	return nil
 }
 
-func (l *LimitExecutor) limitRun(limit int, ids []uint64, exec func(ids []uint64) error) error {
-	if len(ids) < limit || len(ids) == limit {
+func (l *TestExecutor) limitRun(ids []uint64, exec func(ids []uint64) error) error {
+	if len(ids) < l.limit || len(ids) == l.limit {
 		if err := exec(ids); err != nil {
 			log.Logger.Error("limit run failed", zap.Uint64s("ids", ids), zap.Error(err))
 			return err
@@ -82,7 +100,7 @@ func (l *LimitExecutor) limitRun(limit int, ids []uint64, exec func(ids []uint64
 	var tmp []uint64
 
 	for i := range ids {
-		if len(tmp) > limit {
+		if len(tmp) > l.limit {
 			if err := exec(tmp); err != nil {
 				log.Logger.Error("limit run failed", zap.Uint64s("tmp ids", ids), zap.Error(err))
 				return err

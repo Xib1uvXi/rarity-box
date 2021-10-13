@@ -42,7 +42,6 @@ func (ds *thegraphTokenIDSynchronizer) Sync(address string) ([]uint64, error) {
 		return nil, err
 	}
 
-	// todo
 	return ids, nil
 }
 

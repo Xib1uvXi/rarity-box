@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/Xib1uvXi/rarity-box/pkg/box"
 	"github.com/Xib1uvXi/rarity-box/pkg/box/summonerinfo"
+	"github.com/Xib1uvXi/rarity-box/pkg/clirunner/executor"
 	"github.com/Xib1uvXi/rarity-box/pkg/common/json"
 	"github.com/Xib1uvXi/rarity-box/pkg/contractlib"
 	"github.com/Xib1uvXi/rarity-box/pkg/tasker"
@@ -11,6 +12,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/stretchr/testify/assert"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -28,7 +30,10 @@ func TestRunner_Run(t *testing.T) {
 
 	summonersSyncer := box.BuildBox(summonerinfo.NewConcurrentReader(40, clib))
 
-	runner := NewRunner(tasker.NewTaskBuilder(summonersSyncer), &testExecutor{}, clib.TxSender.Address().String())
+	tExecutor := executor.NewTestExecutor(clib)
+	tExecutor.RunGoldClaimTask = true
+
+	runner := NewRunner(tasker.NewTaskBuilder(summonersSyncer), tExecutor, strings.ToLower(clib.TxSender.Address().String()))
 
 	assert.NoError(t, runner.Run())
 }
