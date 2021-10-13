@@ -39,6 +39,7 @@ func main() {
 	router.GET("/summoners/:address", ginServer.Summoners)
 	router.GET("/tasks/:address", ginServer.Tasks)
 	router.POST("/approve/check", ginServer.IsOperator)
+	router.GET("/tx/approve", ginServer.SetOperator)
 
 	router.Run(":8080")
 }

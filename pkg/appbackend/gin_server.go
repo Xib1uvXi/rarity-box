@@ -93,3 +93,20 @@ func (s *GinServer) IsOperator(c *gin.Context) {
 		"result":  result,
 	})
 }
+
+func (s *GinServer) SetOperator(c *gin.Context) {
+	txParam, err := s.srv.SetOperator()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"err_msg": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"result":  txParam,
+	})
+}
