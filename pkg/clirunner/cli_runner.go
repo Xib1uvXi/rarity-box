@@ -22,7 +22,7 @@ func NewRunner(taskBuilder *tasker.TaskBuilder, executor Executor, address strin
 }
 
 func (r *Runner) Run() error {
-	tasks, err := r.taskBuilder.Build(r.address)
+	tasks, err := r.taskBuilder.Tasks(r.address)
 	if err != nil {
 		log.Logger.Error("runner build task failed", zap.String("address", r.address), zap.Error(err))
 		return err

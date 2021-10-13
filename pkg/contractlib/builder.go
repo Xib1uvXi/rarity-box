@@ -22,3 +22,7 @@ func BuildV1CallerLib(pkStr string, conn *ethclient.Client, hasFee bool) (*Calle
 
 	return NewCallerLib(rlib, hasFee)
 }
+
+func BuildV1RarityLibWithoutSender(conn *ethclient.Client) (*RarityLib, error) {
+	return NewRarityLib(conn, nil)
+}

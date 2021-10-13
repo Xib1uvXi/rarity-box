@@ -4,6 +4,7 @@ import (
 	"github.com/Xib1uvXi/rarity-box/pkg/common/log"
 	"github.com/Xib1uvXi/rarity-box/pkg/types"
 	"go.uber.org/zap"
+	"strings"
 )
 
 type Box struct {
@@ -17,7 +18,7 @@ func NewBox(syncer *syncer) *Box {
 
 func (b *Box) SyncSummoners(address string) ([]*types.Summoner, error) {
 	// sync summoner
-	summoners, err := b.syncer.Sync(address)
+	summoners, err := b.syncer.Sync(strings.ToLower(address))
 
 	if err != nil {
 		log.Logger.Error("box sync summoner failed", zap.String("address", address), zap.Error(err))

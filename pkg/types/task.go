@@ -10,4 +10,5 @@ const (
 type Task struct {
 	TaskType string   `json:"task_type"`
 	IDs      []uint64 `json:"ids"`
+	Count    int      `json:"count"`
 }

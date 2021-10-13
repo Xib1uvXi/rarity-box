@@ -7,7 +7,6 @@ import (
 	"github.com/Xib1uvXi/rarity-box/pkg/contractlib"
 	"github.com/Xib1uvXi/rarity-box/pkg/tasker"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"strings"
 )
 
 func Build(pkStr string, hasFee bool) (*Runner, error) {
@@ -26,7 +25,7 @@ func Build(pkStr string, hasFee bool) (*Runner, error) {
 
 	summonersSyncer := box.BuildBox(summonerinfo.NewConcurrentReader(40, clib))
 
-	runner := NewRunner(tasker.NewTaskBuilder(summonersSyncer), limitExecutor, strings.ToLower(clib.TxSender.Address().String()))
+	runner := NewRunner(tasker.NewTaskBuilder(summonersSyncer), limitExecutor, clib.TxSender.Address().String())
 
 	return runner, nil
 }

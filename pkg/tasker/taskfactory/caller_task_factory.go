@@ -47,6 +47,11 @@ func (c *callerTaskFactory) Task(summoners []*types.Summoner) []*types.Task {
 		}
 	}
 
+	adventureTask.Count = len(adventureTask.IDs)
+	levelupTask.Count = len(levelupTask.IDs)
+	goldclaimTask.Count = len(goldclaimTask.IDs)
+	dungeonTask.Count = len(dungeonTask.IDs)
+
 	var result []*types.Task
 
 	result = append(result, levelupTask, goldclaimTask, adventureTask, dungeonTask)
