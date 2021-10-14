@@ -30,26 +30,40 @@ type TxBuilder interface {
 
 type srv struct {
 	summonersSyncer SummonersSyncer
-	tasker          Tasker
-	operator        Operator
-	operatorCache   *lru.ARCCache
+	summonersCache *lru.ARCCache
+
+	tasker        Tasker
+	operator      Operator
+	operatorCache *lru.ARCCache
 }
 
 func NewSrv(summonersSyncer SummonersSyncer, tasker Tasker, operator Operator) *srv {
-	cache, err := lru.NewARCWithExpire(100, 15*time.Second)
+	operatorCache, err := lru.NewARCWithExpire(100, 15*time.Second)
 	if err != nil {
 		panic(err)
 	}
 
-	return &srv{summonersSyncer: summonersSyncer, tasker: tasker, operatorCache: cache, operator: operator}
+	summonersCache, err := lru.NewARCWithExpire(100, 10*time.Second)
+	if err != nil {
+		panic(err)
+	}
+
+	return &srv{summonersSyncer: summonersSyncer, tasker: tasker, operatorCache: operatorCache, operator: operator, summonersCache: summonersCache}
 }
 
 func (s *srv) Summoners(address string) ([]*types.Summoner, error) {
+	r, ok := s.summonersCache.Get(address)
+	if ok {
+		return r.([]*types.Summoner), nil
+	}
+
 	summoners, err := s.summonersSyncer.SyncSummoners(address)
 	if err != nil {
 		log.Logger.Error("appbackend get Summoners failed", zap.String("address", address), zap.Error(err))
 		return nil, err
 	}
+
+	s.summonersCache.Add(address, summoners)
 
 	return summoners, nil
 }
