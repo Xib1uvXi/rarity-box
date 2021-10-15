@@ -32,7 +32,9 @@ func main() {
 
 	taskBuilder := tasker.NewTaskBuilder(summonersSyncer)
 
-	ginServer := appbackend2.NewGinServer(appbackend2.NewSrv(summonersSyncer, taskBuilder, ablib))
+	executor := appbackend2.NewLimitExecutor(ablib)
+
+	ginServer := appbackend2.NewGinServer(appbackend2.NewSrv(summonersSyncer, taskBuilder, ablib, executor))
 
 	router := gin.Default()
 
@@ -40,6 +42,7 @@ func main() {
 	router.GET("/tasks/:address", ginServer.Tasks)
 	router.POST("/approve/check", ginServer.IsOperator)
 	router.GET("/tx/approve", ginServer.SetOperator)
+	router.POST("/tx/task/run", ginServer.RunTask)
 
 	router.Run(":8080")
 }

@@ -78,7 +78,7 @@ func (l *AbLib) ClaimGold(from string, ids []uint64) (*types.RawTxParam, error) 
 }
 
 func (l *AbLib) Dungeon(from string, ids []uint64) (*types.RawTxParam, error) {
-	return l.genRarityInput(from, "dungeon", ids)
+	return l.genNeedApproveInput(from, "dungeon", ids)
 }
 
 func (l *AbLib) genNeedApproveInput(from string, method string, ids []uint64) (*types.RawTxParam, error) {
@@ -95,7 +95,7 @@ func (l *AbLib) genNeedApproveInput(from string, method string, ids []uint64) (*
 		return nil, err
 	}
 
-	input, err := l.rAbi.Pack(method, _ids, needApprove)
+	input, err := l.cAbi.Pack(method, _ids, needApprove)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +115,8 @@ func (l *AbLib) genRarityInput(from string, method string, ids []uint64) (*types
 		return nil, err
 	}
 
-	input, err := l.rAbi.Pack(method, _ids)
+	input, err := l.cAbi.Pack(method, _ids)
+
 	if err != nil {
 		return nil, err
 	}
@@ -158,7 +159,7 @@ func (l *AbLib) convertUint2BigInt(ids []uint64) []*big.Int {
 
 func (l *AbLib) estimateGasCost(from common.Address, method string, param ...interface{}) (*big.Int, error) {
 	to := common.HexToAddress(CallerContractAddress)
-	callData, err := l.cAbi.Pack(method, param)
+	callData, err := l.cAbi.Pack(method, param...)
 	if err != nil {
 		return nil, err
 	}

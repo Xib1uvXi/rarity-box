@@ -221,7 +221,7 @@ func (l *CallerLib) convertUint2BigInt(ids []uint64) []*big.Int {
 
 func (l *CallerLib) estimateGasCost(from common.Address, method string, param ...interface{}) (*big.Int, error) {
 	to := common.HexToAddress(CallerContractAddress)
-	callData, err := l.cAbi.Pack(method, param)
+	callData, err := l.cAbi.Pack(method, param...)
 	if err != nil {
 		return nil, err
 	}

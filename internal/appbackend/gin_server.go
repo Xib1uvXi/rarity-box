@@ -66,7 +66,7 @@ func (s *GinServer) Tasks(c *gin.Context) {
 }
 
 type IsOperatorReq struct {
-	Address string
+	Address string `json:"address"`
 }
 
 func (s *GinServer) IsOperator(c *gin.Context) {
@@ -108,5 +108,35 @@ func (s *GinServer) SetOperator(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"result":  txParam,
+	})
+}
+
+type RunReq struct {
+	Address  string `json:"address"`
+	TaskType string `json:"task_type"`
+}
+
+func (s *GinServer) RunTask(c *gin.Context) {
+	var req RunReq
+	if err := c.BindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"err_msg": err.Error(),
+		})
+		return
+	}
+
+	result, err := s.srv.TaskRun(req.Address, req.TaskType)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"err_msg": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"result":  result,
 	})
 }

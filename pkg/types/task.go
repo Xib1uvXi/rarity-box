@@ -2,7 +2,7 @@ package types
 
 const (
 	AdventureTask = "adventure"
-	LevelupTask   = "levelup`"
+	LevelupTask   = "levelup"
 	GoldClaimTask = "goldclaim"
 	DungeonTask   = "dungeon"
 )

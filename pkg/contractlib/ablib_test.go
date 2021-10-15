@@ -3,6 +3,7 @@ package contractlib
 import (
 	"context"
 	"fmt"
+	"github.com/Xib1uvXi/rarity-box/pkg/common/json"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"testing"
@@ -33,4 +34,38 @@ func TestAbLib_SetOperator(t *testing.T) {
 
 	fmt.Println(param.Input == hexutil.Encode(tx.Data()))
 
+}
+
+func TestAbLib_Adventure(t *testing.T) {
+	client, err := ethclient.Dial("https://rpc.ftm.tools")
+	assert.NoError(t, err)
+
+	rlib, err := NewRarityLib(client, &testSender{})
+	assert.NoError(t, err)
+
+	ablib, err := NewAbLib(rlib)
+	assert.NoError(t, err)
+
+	r, err := ablib.Adventure("0x6D81145629f154dBf07fDAb18D2892818626FeCF", []uint64{3574968, 3575125})
+
+	assert.NoError(t, err)
+
+	fmt.Println(json.StringifyJson(r))
+}
+
+func TestAbLib_Dungeon(t *testing.T) {
+	client, err := ethclient.Dial("https://rpc.ftm.tools")
+	assert.NoError(t, err)
+
+	rlib, err := NewRarityLib(client, &testSender{})
+	assert.NoError(t, err)
+
+	ablib, err := NewAbLib(rlib)
+	assert.NoError(t, err)
+
+	r, err := ablib.Dungeon("0x6D81145629f154dBf07fDAb18D2892818626FeCF", []uint64{3574968, 3575125})
+
+	assert.NoError(t, err)
+
+	fmt.Println(json.StringifyJson(r))
 }

@@ -21,23 +21,18 @@ type Operator interface {
 	SetOperator() (*types.RawTxParam, error)
 }
 
-type TxBuilder interface {
-	Adventure(from string, ids []uint64) (*types.RawTxParam, error)
-	Levelup(from string, ids []uint64) (*types.RawTxParam, error)
-	ClaimGold(from string, ids []uint64) (*types.RawTxParam, error)
-	Dungeon(from string, ids []uint64) (*types.RawTxParam, error)
-}
-
 type srv struct {
 	summonersSyncer SummonersSyncer
-	summonersCache *lru.ARCCache
+	summonersCache  *lru.ARCCache
 
 	tasker        Tasker
 	operator      Operator
 	operatorCache *lru.ARCCache
+
+	limitExecutor *LimitExecutor
 }
 
-func NewSrv(summonersSyncer SummonersSyncer, tasker Tasker, operator Operator) *srv {
+func NewSrv(summonersSyncer SummonersSyncer, tasker Tasker, operator Operator, limitExecutor *LimitExecutor) *srv {
 	operatorCache, err := lru.NewARCWithExpire(100, 15*time.Second)
 	if err != nil {
 		panic(err)
@@ -48,7 +43,7 @@ func NewSrv(summonersSyncer SummonersSyncer, tasker Tasker, operator Operator) *
 		panic(err)
 	}
 
-	return &srv{summonersSyncer: summonersSyncer, tasker: tasker, operatorCache: operatorCache, operator: operator, summonersCache: summonersCache}
+	return &srv{summonersSyncer: summonersSyncer, tasker: tasker, operatorCache: operatorCache, operator: operator, summonersCache: summonersCache, limitExecutor: limitExecutor}
 }
 
 func (s *srv) Summoners(address string) ([]*types.Summoner, error) {
@@ -107,4 +102,14 @@ func (s *srv) SetOperator() (*types.RawTxParam, error) {
 	}
 
 	return param, nil
+}
+
+func (s *srv) TaskRun(address string, taskType string) ([]*types.RawTxParam, error) {
+	tasks, err := s.tasker.Tasks(address)
+	if err != nil {
+		log.Logger.Error("appbackend get tasks failed", zap.String("address", address), zap.Error(err))
+		return nil, err
+	}
+
+	return s.limitExecutor.Run(address, taskType, tasks)
 }
