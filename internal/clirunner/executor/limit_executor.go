@@ -25,6 +25,10 @@ func (l *LimitExecutor) Run(tasks []*types.Task) error {
 	for i := range tasks {
 		task := tasks[i]
 
+		if len(task.IDs) == 0 {
+			continue
+		}
+
 		switch task.TaskType {
 		case types.LevelupTask:
 			err := l.limitRun(249, task.IDs, func(ids []uint64) error {

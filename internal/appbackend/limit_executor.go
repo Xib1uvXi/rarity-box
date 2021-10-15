@@ -24,6 +24,10 @@ func (l *LimitExecutor) Run(from, taskType string, tasks []*types.Task) ([]*type
 	for i := range tasks {
 		task := tasks[i]
 
+		if len(task.IDs) == 0 {
+			continue
+		}
+
 		switch task.TaskType {
 		case types.LevelupTask:
 			if task.TaskType != taskType {
